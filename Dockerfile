@@ -2,7 +2,6 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Accept build-time environment variables for Supabase/Vite
 ARG SUPABASE_PUBLISHABLE_KEY
 ARG VITE_SUPABASE_PUBLISHABLE_KEY
 ENV SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY
@@ -22,10 +21,9 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV NODE_ENV=production
 
-# Copy node_modules and built dist folder from builder
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app ./
 
 EXPOSE 3000
-CMD ["node", "dist/server/server.js"]
+
+# Runs Vite/TanStack preview server bound to all network interfaces
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "3000"]
