@@ -9,14 +9,17 @@ export default defineConfig({
   plugins: [
     tsconfigPaths(),
     tailwindcss(),
-    tanstackStart({
-      target: "server",
-    }),
+    tanstackStart(),
     react(),
   ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  preview: {
+    allowedHosts: true, // Allows all external hosts (including sslip.io) through Traefik/Coolify
+    host: "0.0.0.0",
+    port: 3000,
   },
 });
