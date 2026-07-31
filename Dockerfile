@@ -9,7 +9,6 @@ ENV SUPABASE_PUBLISHABLE_KEY=$SUPABASE_PUBLISHABLE_KEY
 ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
 
 COPY package*.json ./
-# Uses npm install to avoid lockfile mismatch errors during build
 RUN npm install
 
 COPY . .
@@ -23,8 +22,10 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV NODE_ENV=production
 
-# Copy built Nitro standalone server output
-COPY --from=builder /app/.output ./.output
+# Copy node_modules and built dist folder from builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
-CMD ["node", ".output/server/index.mjs"]
+CMD ["node", "dist/server/server.js"]
